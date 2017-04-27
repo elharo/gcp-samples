@@ -2,13 +2,11 @@ package com.elharo.gcp.demo;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Iterator;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.cloud.Page;
+import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BucketListOption;
@@ -16,6 +14,7 @@ import com.google.cloud.storage.StorageOptions;
 
 public class HelloCloudStorage extends HttpServlet {
 
+  @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) 
       throws IOException {
       
@@ -26,11 +25,8 @@ public class HelloCloudStorage extends HttpServlet {
     Storage storage = StorageOptions.getDefaultInstance().getService();
     BucketListOption options = BucketListOption.pageSize(100);
 	Page<Bucket> buckets = storage.list(options);
-	Iterator<Bucket> bucketIterator = buckets.iterateAll();
-	for (Bucket bucket = bucketIterator.next();
-	    bucketIterator.hasNext();
-	    bucket = bucketIterator.next()) {
+	for (Bucket bucket : buckets.iterateAll()) {
 	   writer.println(bucket.getName());
-	 }
+    }
   }
 }
